@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Redirecting...</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>
+    // If a session token already exists, go straight to the profile page;
+    // otherwise send the user to login.
+    var token = localStorage.getItem('authToken');
+    window.location.href = token ? 'profile.html' : 'login.html';
+</script>
+</head>
+<body>
+    <noscript>JavaScript is required. Please go to <a href="login.html">login.html</a>.</noscript>
+</body>
+</html>

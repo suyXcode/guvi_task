@@ -1,0 +1,105 @@
+# Render Blueprint for the GUVI internship app.
+# Deploy: push this repo to GitHub, then in Render click New + > Blueprint
+# and point it at this repo. Render reads this file and creates all four
+# services below in one go.
+#
+# Cost note: MySQL and MongoDB run as Render "private services" (pserv),
+# which have no free instance type and need a paid plan + disk to persist
+# data. The web service and the Redis (Key Value) instance can run on
+# Render's free tier. See render.com/pricing for current rates.
+
+services:
+  # ---------- The PHP/Apache web app ----------
+  - type: web
+    name: guvi-internship-app
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: free   # change to "starter" (or higher) to avoid free-tier spin-down
+    envVars:
+      - key: DB_HOST
+        fromService:
+          name: guvi-mysql
+          type: pserv
+          property: host
+      - key: DB_PORT
+        fromService:
+          name: guvi-mysql
+          type: pserv
+          property: port
+      - key: DB_NAME
+        value: guvi_internship
+      - key: DB_USER
+        fromService:
+          name: guvi-mysql
+          type: pserv
+          envVarKey: MYSQL_USER
+      - key: DB_PASS
+        fromService:
+          name: guvi-mysql
+          type: pserv
+          envVarKey: MYSQL_PASSWORD
+      - key: MONGO_HOST
+        fromService:
+          name: guvi-mongo
+          type: pserv
+          property: host
+      - key: MONGO_PORT
+        fromService:
+          name: guvi-mongo
+          type: pserv
+          property: port
+      - key: MONGO_DB
+        value: guvi_internship
+      - key: MONGO_COLLECTION
+        value: profiles
+      - key: REDIS_HOST
+        fromService:
+          name: guvi-redis
+          type: keyvalue
+          property: host
+      - key: REDIS_PORT
+        fromService:
+          name: guvi-redis
+          type: keyvalue
+          property: port
+
+  # ---------- MySQL (registration data) ----------
+  - type: pserv
+    name: guvi-mysql
+    runtime: docker
+    dockerfilePath: ./Dockerfile.mysql
+    dockerContext: .
+    plan: starter   # pserv has no free tier
+    disk:
+      name: mysql-data
+      mountPath: /var/lib/mysql
+      sizeGB: 1
+    envVars:
+      - key: MYSQL_DATABASE
+        value: guvi_internship
+      - key: MYSQL_USER
+        value: guvi_app
+      - key: MYSQL_PASSWORD
+        generateValue: true
+      - key: MYSQL_ROOT_PASSWORD
+        generateValue: true
+
+  # ---------- MongoDB (profile data) ----------
+  - type: pserv
+    name: guvi-mongo
+    runtime: image
+    image:
+      url: docker.io/library/mongo:7
+    plan: starter   # pserv has no free tier
+    disk:
+      name: mongo-data
+      mountPath: /data/db
+      sizeGB: 1
+
+  # ---------- Redis (session tokens) ----------
+  - type: keyvalue
+    name: guvi-redis
+    plan: free   # 25MB, no disk persistence — fine for session tokens
+    ipAllowList: []   # internal connections only, unauthenticated by default
+    maxmemoryPolicy: allkeys-lru
