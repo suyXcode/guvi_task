@@ -88,7 +88,7 @@ function envOr(string $key, string $default = ''): string
 
 define('DB_HOST', envOr('DB_HOST', '127.0.0.1'));
 define('DB_PORT', (int) envOr('DB_PORT', '3306'));
-define('DB_NAME', envOr('DB_NAME', 'guvi_internship'));
+define('DB_NAME', envOr('DB_NAME', 'sql12835752'));
 define('DB_USER', envOr('DB_USER', 'root'));
 define('DB_PASS', envOr('DB_PASS', ''));
 
@@ -133,7 +133,7 @@ if ($mongoUri !== false && trim($mongoUri) !== '') {
 
 define(
     'MONGO_DB',
-    envOr('MONGO_DB', 'guvi_internship')
+    envOr('MONGO_DB', 'sql12835752')
 );
 
 define(
