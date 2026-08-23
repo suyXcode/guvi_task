@@ -1,6 +1,6 @@
 -- Run this once against your MySQL database
-CREATE DATABASE IF NOT EXISTS guvi_internship CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE guvi_internship;
+CREATE DATABASE IF NOT EXISTS sql12835752 CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE sql12835752;
 
 CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
