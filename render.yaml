@@ -28,7 +28,7 @@ services:
           type: pserv
           property: port
       - key: DB_NAME
-        value: guvi_internship
+        value: sql12835752
       - key: DB_USER
         fromService:
           name: guvi-mysql
@@ -77,7 +77,7 @@ services:
       sizeGB: 1
     envVars:
       - key: MYSQL_DATABASE
-        value: guvi_internship
+        value: sql12835752
       - key: MYSQL_USER
         value: guvi_app
       - key: MYSQL_PASSWORD
